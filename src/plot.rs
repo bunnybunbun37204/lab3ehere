@@ -1,3 +1,4 @@
+use full_palette::ORANGE;
 use plotters::prelude::*;
 use std::time::Duration;
 
@@ -11,7 +12,7 @@ pub fn plot_durations(results: &[DurationResult]) -> Result<(), Box<dyn std::err
     root.fill(&WHITE)?;
 
     // Define colors for each method
-    let colors = vec![BLUE, RED, GREEN, CYAN, MAGENTA];
+    let colors = vec![BLUE, RED, GREEN, CYAN, MAGENTA, YELLOW, ORANGE];
 
     // Convert durations to f64 for plotting
     let max_duration = results

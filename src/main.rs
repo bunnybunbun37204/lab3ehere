@@ -21,8 +21,10 @@ fn main() {
     println!("1. Run Brute Force Method");
     println!("2. Run Multithreaded Brute Force Method");
     println!("3. Run Nearest Passenger Greedy Method");
-    println!("4. Run Efficient Search Method");
-    println!("5. Run All Methods");
+    println!("4. Run Nearest Passenger Greedy With Que Method");
+    println!("5. Run Efficient Search Method");
+    println!("6. Run Maximum bipartite Method");
+    println!("7. Run All Methods");
     println!("Enter your choices:");
 
     let mut choices = String::new();
@@ -76,6 +78,15 @@ fn main() {
             }
             4 => {
                 let start_time = std::time::Instant::now();
+                methods::run_nearest_passenger_greedy_with_priority_que(&arr, k);
+                let duration = start_time.elapsed();
+                results.push(DurationResult {
+                    name: "Nearest Passenger Greedy With Que".to_string(),
+                    duration,
+                });
+            }
+            5 => {
+                let start_time = std::time::Instant::now();
                 methods::run_efficient_search(&arr, k);
                 let duration = start_time.elapsed();
                 results.push(DurationResult {
@@ -83,7 +94,16 @@ fn main() {
                     duration,
                 });
             }
-            5 => {
+            6 => {
+                let start_time = std::time::Instant::now();
+                methods::run_maximum_birpartite(&arr, k);
+                let duration = start_time.elapsed();
+                results.push(DurationResult {
+                    name: "Maximum Biparitie".to_string(),
+                    duration,
+                });
+            }
+            7 => {
                 let start_time = std::time::Instant::now();
                 methods::run_brute_force(&arr, k);
                 let duration = start_time.elapsed();
