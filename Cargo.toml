@@ -1,0 +1,9 @@
+[package]
+name = "lab-algo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+itertools = "0.10"
+num_cpus = "1.13"
+plotters = "0.3" 
