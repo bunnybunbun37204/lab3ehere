@@ -1,63 +1,71 @@
-use std::cmp::Reverse;
-use std::collections::BinaryHeap;
+use std::collections::HashSet;
 
-pub fn nearest_passenger_bipartite_matching(arr: &Vec<char>, k: usize) -> usize {
-    println!("\n=== Nearest Passenger Search with Bipartite Matching Style ===");
-    println!("> Starting nearest passenger search...");
+pub fn maximum_bipartite_matching(arr: &Vec<char>, k: usize) -> usize {
+    println!("\n=== Maximum Bipartite Matching ===");
+    println!("> Starting bipartite matching...");
 
     let n = arr.len();
     let mut matches = 0;
-    let mut passengers = vec![false; n];
     let mut grab_cars = Vec::new();
+    let mut passengers = Vec::new();
 
-    // Find all 'G' positions
+    // Find all 'G' and 'P' positions
     for i in 0..n {
         if arr[i] == 'G' {
             grab_cars.push(i);
+        } else if arr[i] == 'P' {
+            passengers.push(i);
         }
     }
 
-    // Priority Queue to store potential matches (passengers)
-    let mut pq = BinaryHeap::new();
+    let mut adj_list: Vec<HashSet<usize>> = vec![HashSet::new(); grab_cars.len()];
+    let mut matched_passengers = vec![None; passengers.len()];
 
-    for &i in &grab_cars {
-        println!("> Checking Grab car at position {}", i);
-
-        // Define the range to search for passengers
-        let start = (i as isize - k as isize).max(0) as usize;
-        let end = (i + k).min(n - 1);
-        println!(
-            "  - Searching for passengers in range: {} to {}",
-            start, end
-        );
-
-        // Add all available passengers in the range to the priority queue
-        for j in start..=end {
-            if arr[j] == 'P' && !passengers[j] {
-                let distance = (i as isize - j as isize).abs() as usize;
-                pq.push((Reverse(distance), j)); // Use distance as the priority
-                println!(
-                    "    - Available passenger added to priority queue at position {}",
-                    j
-                );
-            }
-        }
-
-        // Find the nearest available passenger
-        while let Some((Reverse(distance), pos)) = pq.pop() {
-            if !passengers[pos] {
-                println!(
-                    "    - Nearest available passenger found at position {} with distance {}",
-                    pos, distance
-                );
-                matches += 1;
-                passengers[pos] = true;
-                break; // Stop searching once a match is found
+    // Create adjacency list
+    for (i, &g_pos) in grab_cars.iter().enumerate() {
+        for (j, &p_pos) in passengers.iter().enumerate() {
+            if (g_pos as isize - p_pos as isize).abs() as usize <= k {
+                adj_list[i].insert(j);
             }
         }
     }
 
-    println!("> Nearest passenger search complete.");
+    // DFS to find an augmenting path
+    fn dfs(
+        u: usize,
+        adj_list: &Vec<HashSet<usize>>,
+        matched_passengers: &mut Vec<Option<usize>>,
+        visited: &mut Vec<bool>,
+    ) -> bool {
+        if visited[u] {
+            return false;
+        }
+        visited[u] = true;
+        for &v in &adj_list[u] {
+            if matched_passengers[v] == None
+                || dfs(
+                    matched_passengers[v].unwrap(),
+                    adj_list,
+                    matched_passengers,
+                    visited,
+                )
+            {
+                matched_passengers[v] = Some(u);
+                return true;
+            }
+        }
+        false
+    }
+
+    // Find maximum matching
+    for u in 0..grab_cars.len() {
+        let mut visited = vec![false; grab_cars.len()];
+        if dfs(u, &adj_list, &mut matched_passengers, &mut visited) {
+            matches += 1;
+        }
+    }
+
+    println!("> Maximum bipartite matching complete.");
     println!("> Total Matches: {}\n", matches);
     matches
 }

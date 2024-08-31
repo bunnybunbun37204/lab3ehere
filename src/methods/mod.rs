@@ -58,7 +58,7 @@ pub fn run_efficient_search(arr: &Vec<char>, k: usize) {
 pub fn run_maximum_birpartite(arr: &Vec<char>, k: usize) {
     let start_time = Instant::now();
     let max_passengers =
-    maximum_bipartite::nearest_passenger_bipartite_matching(arr, k);
+    maximum_bipartite::maximum_bipartite_matching(arr, k);
     let duration = start_time.elapsed();
     println!("Bipartite match Search Result:");
     println!("  - Maximum Passengers: {}", max_passengers);
